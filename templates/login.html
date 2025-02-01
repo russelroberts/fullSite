@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="Home page for STI data collection">
+{% endblock head %}
+{% block title %}<title>Home</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+{% endblock stylesheets %}
+{% block content %}
+<div class="login">
+    <h1>Login</h1>
+    <div class="msg">{{ msg }}</div>
+    <div class="links">
+        <a href="{{ url_for('login') }}" class="active">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+    </div>
+    <form action="{{ url_for('login') }}" method="post">
+        
+        <label for="email">
+            <i class="fa fa-user"></i>
+        </label>
+        <input type="text" name="email" placeholder="Email" id="email" required>
+        <label for="password">
+            <i class="fa fa-lock"></i>
+        </label>
+        <input type="password" name="password" placeholder="Password" id="password" required>
+        
+        <input type="submit" value="Login">
+    </form>
+</div>
+{% endblock content %}
+

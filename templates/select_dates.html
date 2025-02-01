@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - Select Dates">
+    
+{% endblock head %}
+{% block title %}<title>Home</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock stylesheets %}
+{% block content %}
+<div class="mt-5">
+<h2>Select Dates for Booking</h2>
+<input type="text" id="datePicker" name="datePicker" class="form-control" placeholder="Select multiple dates" />
+
+<button id="saveBtn" class="btn btn-primary mt-3">Save Bookings</button>
+
+<div id="message" class="mt-3"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#datePicker", { mode: "multiple", dateFormat: "Y-m-d" });
+
+        document.getElementById("saveBtn").addEventListener("click", function () {
+            let dates = document.getElementById("datePicker").value.split(", ");
+            fetch("/save_bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ dates: dates })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("message").innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+</div>
+{% endblock content %}

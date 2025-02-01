@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS- User Roles">
+{% endblock head %}
+{% block title %}<title>User Roles</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+{% endblock stylesheets %}
+{% block content %}
+<h2>Roles</h2>
+<a href="{{ url_for('add_role') }}" class="btn btn-primary">Add Role</a>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Description</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for role in roles %}
+        <tr>
+            <td>{{ role.id }}</td><td>{{ role.name }}</td><td>{{ role.desc }}</td>
+            <td>
+                <a href="{{ url_for('delete_role', id=role.id) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

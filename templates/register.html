@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="Home page for STI data collection">
+{% endblock head %}
+{% block title %}<title>Home</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+{% endblock stylesheets %}
+{% block content %}
+<div class="login">
+    <h1>Login</h1>
+    <div class="links">
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="active">Register</a>
+    </div>
+    <form action="/register" method="post">
+        <div class="msg">{{ msg }}</div>
+        <label for="email">
+            <i class="fa fa-user"></i>
+        </label>
+        <input type="text" name="email" placeholder="Email" id="email" required>
+        <label for="cemail">
+            <i class="fa fa-user"></i>
+        </label>
+        <input type="text" name="cemail" placeholder="Confirm email" id="cemail" required>
+        <label for="fname">
+            <i class="fa fa-user"></i>
+        </label>
+        <input type="text" name="fname" placeholder="First Name" id="fname" required>
+        <label for="lname">
+            <i class="fa fa-user"></i>
+        </label>
+        <input type="text" name="lname" placeholder="Last Name" id="lname" required>
+        <label for="role">
+            select Role
+        </label>
+        <select name="role" id="role">
+{% for role in roles %}
+  <option value="{{role.id}}">{{role.name}}</option>
+{% endfor %}
+</select><a href="{{ url_for('add_role') }}" class="btn btn-primary">Add Role</a>
+        
+        <label for="password">
+            <i class="fa fa-lock"></i>
+        </label>
+        <input type="password" name="password" placeholder="Password" id="password" required>
+        <label for="cpassword">
+            <i class="fa fa-lock"></i>
+        </label>
+        <input type="password" name="cpassword" placeholder="Confirm Password" id="cpassword" required>
+        
+        <input type="submit" value="Register" name = "register">
+    </form>
+</div>
+{% endblock content %}
+
