@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, ForeignKey, DateTime, func
+from sqlalchemy import Date, Integer, String, ForeignKey, DateTime, func
 from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase
 from sqlalchemy.ext.declarative import declared_attr
 from datetime import datetime
@@ -60,7 +60,7 @@ class Booking(Base,BaseModel):
     id:Mapped[int]= mapped_column(Integer, primary_key=True, autoincrement=True)
     created_by:Mapped[int] = mapped_column(Integer, ForeignKey('user.id'))
     healthcenter:Mapped[int]=mapped_column(Integer, ForeignKey('LKP.id'))
-    date:Mapped[datetime.date]=mapped_column(DateTime,nullable=False) 
+    date:Mapped[datetime.date]=mapped_column(Date,nullable=False) 
     statusLKP:Mapped[int]=mapped_column(Integer, ForeignKey('LKP.id'))
     clinicalservices:Mapped[str] = mapped_column(String(255))
 

@@ -240,28 +240,40 @@ def bookings():
 @app.route('/patient_bookings')
 def patient_bookings():
     bookings=db.session.query(Booking).all()
-    patientBookings=db.session.query(Patient).all()
+    patientBookings=db.session.query(PatientBooking).all()
     return render_template('patient_bookings.html',bookings=bookings, patientbookings=patientBookings)
 
 @app.route('/create_booking', methods=['GET', 'POST'])
 def create_booking():
+    bookingStatus = db.session.query(LKP).filter_by(category ='bookingstatus')
+    my_services = db.session.query(LKP).filter_by(category ='clinicalservices')
     healthcenters=db.session.query(HealthCenter).all()
     if request.method == 'POST':
         created_by = request.form['created_by']
         healthcenter = request.form['healthcenter']
-        date = request.form['date']
+        #date = request.form['date']
         statusLKP = request.form['statusLKP']
-        clinicalservices = request.form['clinicalservices']
-        new_booking = Booking(created_by=created_by, healthcenter=healthcenter, date=date, statusLKP=statusLKP, clinicalservices=clinicalservices)
-        db.session.add(new_booking)
+        clinicalservices = request.form['selServices']
+        dateCollection = request.form['date']
+        dates=dateCollection.split(',')
+        for eachDate in dates:
+             # Convert date to yyyy-mm-dd format for MySQL
+            date_obj = datetime.strptime(eachDate, "%m/%d/%Y").strftime("%Y-%m-%d")
+            new_booking = Booking(created_by=created_by, healthcenter=healthcenter, date=date_obj, statusLKP=statusLKP, clinicalservices=clinicalservices)
+            db.session.add(new_booking)
         db.session.commit()
         return redirect(url_for('bookings'))
-    return render_template('create_booking.html',healthcenters=healthcenters)
+    return render_template('create_booking.html',healthcenters=healthcenters,bookingstatus=bookingStatus,clinicalServices=my_services)
 
 @app.route('/update_booking/<int:id>', methods=['GET', 'POST'])
 def update_booking(id):
-    booking = db.session.query(Booking).get_or_404(id)
-    if request.method == 'POST':
+     bookingStatus = db.session.query(LKP).filter_by(category ='bookingstatus')
+     my_services = db.session.query(LKP).filter_by(category ='clinicalservices')
+     healthcenters=db.session.query(HealthCenter).all()
+     booking = db.session.query(Booking).get_or_404(id)
+     #date_obj=datetime.strptime(str(booking.date), "%Y-%m-%d").strftime("%m/%d/%Y")
+     #booking.date=date_obj.__str__()
+     if request.method == 'POST':
         booking.created_by = request.form['created_by']
         booking.healthcenter = request.form['healthcenter']
         booking.date = request.form['date']
@@ -269,7 +281,7 @@ def update_booking(id):
         booking.clinicalservices = request.form['clinicalservices']
         db.session.commit()
         return redirect(url_for('bookings'))
-    return render_template('update_booking.html', booking=booking)
+     return render_template('update_booking.html', booking=booking,bookingstatus=bookingStatus,healthcenters=healthcenters,clinicalservices=my_services)
 
 @app.route('/delete_booking/<int:id>')
 def delete_booking(id):

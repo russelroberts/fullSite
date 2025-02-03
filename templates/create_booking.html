@@ -19,31 +19,50 @@
     </div>
     <div class="form-group">
         <label for="healthcenter">Health Center</label>
-        <select name="healthcenter" id="healthcenter">
+        <select name="healthcenter" id="healthcenter" class="form-control form-select">
             {% for healthcenter in healthcenters %}
               <option value="{{healthcenter.id}}">{{healthcenter.name}}</option>
             {% endfor %}
             </select>
-          <help>you can select multiple dates at once</help>        
+                 
       
     </div>
     <div class="form-group">
         <label for="date">Date</label>
         <div id="mycalendar" name="mycalendar"></div>
-        <input type="text" class="form-control" id="date" name="date" placeholder="you can select multiple dates" readonly>
+        <input type="text" class="form-control" id="date" name="date" placeholder="you can select multiple dates" required> 
     </div>
     <div class="form-group">
         <label for="statusLKP">Status</label>
-        <input type="number" class="form-control" id="statusLKP" name="statusLKP" required>
+        <select name="statusLKP" id="statusLKP" class="form-control form-select">
+            {% for eachStatus in bookingstatus %}
+              <option value="{{eachStatus.id}}">{{eachStatus.name}}</option>
+            {% endfor %}
+            </select>
     </div>
     <div class="form-group">
-        <label for="clinicalservices">Clinical Services</label>
-        <input type="text" class="form-control" id="clinicalservices" name="clinicalservices">
+        <h1>Clinical Services</h1>
+            {% for eachService in clinicalServices %}
+            <div class="form-switch">
+                <input class="form-check-input special" type="checkbox" value="{{eachService.name}}" id="chk_{{eachService.id}}">
+                    {{eachService.name}}
+              </div>
+            {% endfor %}
+            </select>
+        <input type="text"class="form-control readonly" id="selServices" name="selServices"/>
     </div>
     <button type="submit" id="submit_booking" class="btn btn-primary">Submit</button>
-    <script>
-        $('#mycalendar').multiDatesPicker();
-    
+
+<script>
+        $('#date').multiDatesPicker();
+        
+        $('.special').change(function() {
+                var selectedValues = $('.special:checked').map(function() {
+                    return this.value;
+                }).get().join(', ');
+
+                $('#selServices').val(selectedValues);
+            });
      </script>
       
 </form>

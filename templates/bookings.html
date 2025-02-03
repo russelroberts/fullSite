@@ -35,9 +35,9 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{{ url_for('create_booking') }}" class="btn btn-primary">Add New Booking</a>
+<a href="{{ url_for('create_booking') }}" class="btn btn-primary">Add Bookings</a>
 
-
+<!--
 <h1>Patient Bookings</h1>
 <table class="table">
     <thead>
@@ -57,13 +57,13 @@
             <td>{{ patientbooking.statusLKP }}</td>
             <td>{{ patientbooking.comments }}</td>
             <td>
-   <!--             <a href="{{ url_for('update_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-warning">Edit</a>
+               <a href="{{ url_for('update_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-warning">Edit</a>
                 <a href="{{ url_for('delete_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-danger">Delete</a>
-            -->      </td>
+                 </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<!-- <a href="{{ url_for('create_patientbooking') }}" class="btn btn-primary">Add New Patient Booking</a>
+ <a href="{{ url_for('create_patientbooking') }}" class="btn btn-primary">Add New Patient Booking</a>
 -->
 {% endblock %}
