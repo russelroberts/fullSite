@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - lookups">
+{% endblock head %}
+{% block title %}<title>Home - lookups</title>{% endblock title %}
+
+{% block content %}
+<h1>LKP Entries</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lkp in lkps %}
+        <tr>
+            <td>{{ lkp.id }}</td>
+            <td>{{ lkp.name }}</td>
+            <td>{{ lkp.category }}</td>
+            <td>{{ lkp.desc }}</td>
+            <td>
+                <a href="{{ url_for('update_lkp', id=lkp.id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_lkp', id=lkp.id) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('create_lkp') }}" class="btn btn-primary">Add New LKP</a>
+{% endblock %}

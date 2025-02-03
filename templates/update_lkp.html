@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit LKP</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ lkp.name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" class="form-control" id="category" name="category" value="{{ lkp.category }}" required>
+    </div>
+    <div class="form-group">
+        <label for="desc">Description</label>
+        <input type="text" class="form-control" id="desc" name="desc" value="{{ lkp.desc }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

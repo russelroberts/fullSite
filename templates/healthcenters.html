@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Health Centers</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>District</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for healthcenter in healthcenters %}
+        <tr>
+            <td>{{ healthcenter.id }}</td>
+            <td>{{ healthcenter.name }}</td>
+            <td>{{ healthcenter.district }}</td>
+            <td>
+                <a href="{{ url_for('update_healthcenter', id=healthcenter.id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_healthcenter', id=healthcenter.id) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('create_healthcenter') }}" class="btn btn-primary">Add New Health Center</a>
+{% endblock %}

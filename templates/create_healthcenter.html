@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - create Healthcenter">
+{% endblock head %}
+{% block title %}<title>Create Health Center</title>{% endblock title %}
+
+{% block content %}
+<h1>Add New Health Center</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+        <label for="district">District</label>
+        <input type="text" class="form-control" id="district" name="district">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

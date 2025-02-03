@@ -49,6 +49,12 @@ class LKP(Base,BaseModel):
     category:Mapped[str] = mapped_column(String(255), nullable=False) #categories can be Healthcenterlkp,bookingstatuslkp,clinicalservicelkp etc.
     desc: Mapped[str] = mapped_column(String(255), nullable=True)
 
+class HealthCenter(Base,BaseModel):
+    __tablename__ = 'HealthCenter'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    district:Mapped[str] = mapped_column(String(255), nullable=True) #districts
+
 class Booking(Base,BaseModel):
     __tablename__="booking"
     id:Mapped[int]= mapped_column(Integer, primary_key=True, autoincrement=True)

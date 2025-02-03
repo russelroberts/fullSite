@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - create Booking">
+{% endblock head %}
+{% block title %}<title>Home -> Create Booking</title>{% endblock title %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link href="https://cdn.rawgit.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.css" rel="stylesheet"/>
+<link href="https://code.jquery.com/ui/1.12.1/themes/pepper-grinder/jquery-ui.css" rel="stylesheet"/>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.rawgit.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.js"></script>
+
+<h1>Add New Booking</h1>
+<form method="POST">
+    <div class="form-group">
+        <!-- <label for="created_by">Created By</label> -->
+        <input type="hidden" class="readonly" value="{{ session['id'] }}" id="created_by" name="created_by" required>
+    </div>
+    <div class="form-group">
+        <label for="healthcenter">Health Center</label>
+        <select name="healthcenter" id="healthcenter">
+            {% for healthcenter in healthcenters %}
+              <option value="{{healthcenter.id}}">{{healthcenter.name}}</option>
+            {% endfor %}
+            </select>
+          <help>you can select multiple dates at once</help>        
+      
+    </div>
+    <div class="form-group">
+        <label for="date">Date</label>
+        <div id="mycalendar" name="mycalendar"></div>
+        <input type="text" class="form-control" id="date" name="date" placeholder="you can select multiple dates" readonly>
+    </div>
+    <div class="form-group">
+        <label for="statusLKP">Status</label>
+        <input type="number" class="form-control" id="statusLKP" name="statusLKP" required>
+    </div>
+    <div class="form-group">
+        <label for="clinicalservices">Clinical Services</label>
+        <input type="text" class="form-control" id="clinicalservices" name="clinicalservices">
+    </div>
+    <button type="submit" id="submit_booking" class="btn btn-primary">Submit</button>
+    <script>
+        $('#mycalendar').multiDatesPicker();
+    
+     </script>
+      
+</form>
+{% endblock %}

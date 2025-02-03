@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="H.A.S">
+{% endblock head %}
+{% block title %}<title>H.A.S - Create User</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+{% endblock stylesheets %}
+{% block content %}
+
+    <h1>Create USer</h1>
+    <form action="/register" method="post">
+        <div class="msg">{{ msg }}</div>
+        <div class="form-group">
+        
+        <label for="email">
+            <i class="fa fa-email"></i>
+        </label>
+        <input type="email" class="form-control" name="email" placeholder="Email" id="email" required>
+    </div>
+        <div class="form-group">
+        
+        <label for="cemail">
+            <i class="fa fa-email"></i>
+        </label>
+        <input type="email" class="form-control" name="cemail" placeholder="Confirm email" id="cemail" required>
+    </div>
+        <div class="form-group">
+        
+        <label for="fname">
+            
+        </label>
+        <input type="text" class="form-control" name="fname" placeholder="First Name" id="fname" required>
+    </div>
+        <div class="form-group">
+        
+        <label for="lname">
+            
+        </label>
+        <input type="text" class="form-control" name="lname" placeholder="Last Name" id="lname" required>
+    </div>
+        <div class="form-group">
+        
+        <label for="role">
+            select Role
+        </label>
+        <select name="role" class="form-control" id="role">
+{% for role in roles %}
+  <option value="{{role.id}}">{{role.name}}</option>
+{% endfor %}
+</select>
+</div>        
+<div class="form-group">
+        <label for="password">
+            <i class="fa fa-lock"></i>
+        </label>
+        <input type="password" class="form-control" name="password" placeholder="Password" id="password" required>
+        </div>
+        <div class="form-group">
+        
+        <label for="cpassword">
+            <i class="fa fa-lock"></i>
+        </label>
+        <input type="password" class="form-control" name="cpassword" placeholder="Confirm Password" id="cpassword" required>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Create User" name = "register">
+    </form>
+{% endblock content %}
+

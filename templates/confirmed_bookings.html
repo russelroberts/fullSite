@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - Select Dates">
+{% endblock head %}
+{% block title %}<title>Home</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+{% endblock stylesheets %}
+{% block content %}
+<h2>Confirmed Bookings</h2>
+    <input type="text" id="datePicker" class="form-control" placeholder="Select a date to confirm" />
+
+    <button id="confirmBtn" class="btn btn-success mt-3">Confirm Booking</button>
+
+    <div id="message" class="mt-3"></div>
+
+    <h4 class="mt-4">Bookings Overview</h4>
+    <input type="text" id="bookingOverview" class="form-control" readonly />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let bookingData = {};
+
+            // Load confirmed bookings
+            fetch("/get_bookings")
+                .then(response => response.json())
+                .then(data => {
+                    bookingData = data;
+                    flatpickr("#datePicker", {
+                        dateFormat: "Y-m-d",
+                        onDayCreate: function (dObj, dStr, fp, dayElem) {
+                            let date = dayElem.dateObj.toISOString().split("T")[0];
+                            if (bookingData[date]) {
+                                dayElem.innerHTML += `<span class="badge bg-primary ms-1">${bookingData[date]}</span>`;
+                            }
+                        }
+                    });
+                });
+
+            // Confirm booking
+            document.getElementById("confirmBtn").addEventListener("click", function () {
+                let date = document.getElementById("datePicker").value;
+                fetch("/confirm_booking", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ date: date })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById("message").innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                        location.reload(); // Refresh to update counts
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    </script>
+
+
+{% endblock content %}

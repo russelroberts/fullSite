@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Patient</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="fname">First Name</label>
+        <input type="text" class="form-control" id="fname" name="fname" value="{{ patient.fname }}" required>
+    </div>
+    <div class="form-group">
+        <label for="lname">Last Name</label>
+        <input type="text" class="form-control" id="lname" name="lname" value="{{ patient.lname }}" required>
+    </div>
+    <div class="form-group">
+        <label for="tele1">Tele1</label>
+        <input type="text" class="form-control" id="tele1" name="tele1" value="{{ patient.tele1 }}">
+    </div>
+    <div class="form-group">
+        <label for="tele2">Tele2</label>
+        <input type="text" class="form-control" id="tele2" name="tele2" value="{{ patient.tele2 }}">
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ patient.email }}">
+    </div>
+    <div class="form-group">
+        <label for="comments">Comments</label>
+        <input type="text" class="form-control" id="comments" name="comments" value="{{ patient.comments }}">
+    </div>
+    <div class="form-group">
+        <label for="healthcenter">Health Center</label>
+      
+        <select name="healthcenter" id="healthcenter" value="{{ patient.healthcenter }}">
+            {% for healthcenter in healthcenters %}
+              <option value="{{healthcenter.id}}">{{healthcenter.name}}</option>
+            {% endfor %}
+            </select>
+         
+      
+    </div>
+</form>
+{% endblock %}

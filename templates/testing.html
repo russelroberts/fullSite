@@ -1,78 +1,46 @@
 {% extends "base.html" %}
-{% block head %}
-    <meta name = "description" content="Home page for STI data collection">
-<!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block head %} 
 
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+{% endblock %}
 
-    <style>
-        .disabled-date {
-            background-color: #ddd !important;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-    </style>
-    {% endblock head %}
-{% block title %}<title>Home</title>{% endblock title %}
-{% block stylesheets %}
-{% endblock stylesheets %}
+
+{% block title %}Create Bookings{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center">Bootstrap 5 Datepicker with Multi-select</h2>
-    <div id="calendar"></div>
-</div>
+<form id="testing" action="/testing" method="post">
+<input type="text" class="form-control" id="mdp-demo" name="mdp-demo"/>
 
-<!-- Bootstrap 5 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link href="https://cdn.rawgit.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.css" rel="stylesheet"/>
+<link href="https://code.jquery.com/ui/1.12.1/themes/pepper-grinder/jquery-ui.css" rel="stylesheet"/>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.rawgit.com/dubrox/Multiple-Dates-Picker-for-jQuery-UI/master/jquery-ui.multidatespicker.js"></script>
 
-<!-- FullCalendar JS -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-
+<select id="healthcenter" class="form-control">
+   <option id="roseau">roseau</option>
+   <option id="roseau">mahaut</option>
+   <option id="roseau">portsmouth</option>
+</select>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let selectedDates = [];
-        let disabledDates = ["2025-02-10", "2025-02-14", "2025-02-20"];  // Set non-selectable dates
-
-        let calendarEl = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',  // Displays calendar on page load
-            selectable: true,             // Allows selection
-            selectOverlap: false,         // Prevents selecting disabled dates
-            dateClick: function(info) {
-                if (disabledDates.includes(info.dateStr)) return;  // Prevent selecting disabled dates
-                
-                if (selectedDates.includes(info.dateStr)) {
-                    selectedDates = selectedDates.filter(date => date !== info.dateStr);
-                } else {
-                    selectedDates.push(info.dateStr);
-                }
-
-                calendar.refetchEvents(); // Refresh events
-            },
-            events: function(fetchInfo, successCallback, failureCallback) {
-                let events = selectedDates.map(date => ({
-                    title: "Selected",
-                    start: date,
-                    backgroundColor: "#007bff",
-                    textColor: "#fff"
-                }));
-
-                disabledDates.forEach(date => {
-                    events.push({
-                        start: date,
-                        display: "background",
-                        className: "disabled-date"
-                    });
-                });
-
-                successCallback(events);
-            }
-        });
-
-        calendar.render();
-    });
+  var dates= $('#mdp-demo').multiDatesPicker();
 </script>
-{% endblock content %}
+<input type="submit" clas="btn btn-primary"/>
 
+testing
+<div class="container">
+	<h3>Bootstrap Multi Select Date Picker</h3>
+	<input type="text" class="form-control date" placeholder="Pick the multiple dates">
+</div>	
+<script >
+   $('.date').datepicker({
+  multidate: true,
+	format: 'dd-mm-yyyy'
+});
+
+</script>
+</form>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

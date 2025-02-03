@@ -3,57 +3,65 @@
 <head>
     {% block head %} {% endblock head %}
     <meta charset="UTF-8">
-    <meta name = "viewport" content="width=device-width, initial-scale=1.0">
-    <meta name = "description" content="main page">
-    {% block title %}{% endblock title %}
-    {% block stylesheets %} {% endblock stylesheets %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
-    rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-    crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesone/css/font-awesome.min.css')}}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap4-datetimepicker@5.2.3/build/css/bootstrap-datetimepicker.min.css">
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='flatpickr.min.css') }}" >
 
-<div class="d-flex" id="wrapper">
-    <!-- Sidebar-->
- <div class="border-end bg-white" id="sidebar-wrapper">
-        <div class="sidebar-heading border-bottom bg-light">Side Menu</div>
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/">Home</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/about">About</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/overview">Overview</a>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css') }}">
+</head>
+<body class="starter-page-page">
+
+  <header id="header" class="header sticky-top">
+
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+          <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:russel.roberts@gmail.com">contact Developer</a></i>
+          <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 767 225 0195</span></i>
         </div>
-    </div> 
-    <!-- Page content wrapper-->
-   
-    <div id="page-content-wrapper">
-        <!-- Top navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-            <div class="container-fluid">
-              <!--  <button class="btn btn-secondary" id="sidebarToggle">Side Menu</button>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                        {% if 'loggedin' in session %}
+        <div class="social-links d-none d-md-flex align-items-center">
+          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div><!-- End Top Bar -->
+
+    <div class="branding d-flex align-items-center">
+
+      <div class="container position-relative d-flex align-items-center justify-content-between">
+        <a href="/" class="logo d-flex align-items-center me-auto">
+          <h1 class="sitename">H.A.S</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            {% if 'loggedin' in session %}
                         <li>welcome {{ email }}  - {{rolename}}</li>
                         <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
                            {% if rolename=='consultant' %}
-                           <li class="nav-item"><a class="nav-link" href="/create_bookings">Schedule Bookings</a></li>
-                           <li class="nav-item"><a class="nav-link" href="/register">Edit Profile</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/bookings">Schedule Bookings</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/edit_user">Edit Profile</a></li>
                        
                            
                            {% elif rolename== 'admin' %}
-                           <li class="nav-item"><a class="nav-link" href="/">confirm bookings</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/bookings">bookings</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/patient_bookings">bookings</a></li>
                            <li class="nav-item"><a class="nav-link" href="/logout"></a></li>
                            <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="/list_roles">Manage Roles</a>
-                                <a class="dropdown-item" href="/users_admin">Manage Users</a>
-                                <a class="dropdown-item" href="/patients_admin">Manage Patients</a>
+                                <a class="dropdown-item" href="/users">Manage Users</a>
+                                <a class="dropdown-item" href="/patients">Manage Patients</a>
+                                <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="/lkps">Lookups Management</a>
+                                <a class="dropdown-item" href="/healthcenters">HealthCenter LKP Management</a>
+                  
                             </div>
                         </li>
 
@@ -65,44 +73,49 @@
                         <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                         {% endif %}
-                       <!-- <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#!">Account</a>
-                                <a class="dropdown-item" href="#!">Settings</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#!">Logout</a>
-                            </div>
-                        </li> -->
-                    </ul>
-                </div>
-            </div>
+                       
         </nav>
-        <!-- Page content-->
-        {% block content %} {% endblock content %}
+ </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-    crossorigin="anonymous"></script>
-    <script src = "{{ url_for('static', filename='moment.js')}}"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap4-datetimepicker@5.2.3/build/js/bootstrap-datetimepicker.min.js"></script>
-    <script src = "{{ url_for('static', filename='scripts.js')}}"></script>
-    {% block javascripts %} {% endblock javascripts %}
-    <div class ="container">
-        <div class="row">
-            <div class="col-md-12">
-                <footer class="text-center text-muted">
-                    <p>Russel Roberts &copy; 2025</p>
-                </footer>
-            </div>
-        </div>
     </div>
-    {% block footer %}{% endblock footer %}
-</div>
-</div>
+</header>
+  <main class="main">
+    <!-- Page Title -->
+    <div class="page-title" data-aos="fade">
+      <div class="heading">
+        <div class="container">
+          <div class="row d-flex justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="shadow-lg p-3 mb-5 bg-body rounded">
+          <!-- Page content-->
+      {% block content %} {% endblock content %}
+</div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div><!-- End Page Title -->
+
+     
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
+      crossorigin="anonymous"></script>
+      
+      <script src = "{{ url_for('static', filename='main.js')}}"></script>
+      <script src = "{{ url_for('static', filename='flatpickr.js')}}"></script>
+    {% block scripts %}{% endblock %}  
+
+  </main>
+
+  <footer id="footer" class="footer light-background">
+<div class="container copyright text-center mt-4">
+      <p>© <span>Copyright 2025</span> <strong class="px-1 sitename">Russel Roberts</strong> <span>All Rights Reserved</span></p>
+     </div>
+  </footer>
+{% block log %}{% endblock %}
 </body>
 
 </html>
+
+    

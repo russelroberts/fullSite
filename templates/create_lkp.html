@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="H.A.S">
+{% endblock head %}
+{% block title %}<title>H.A.S - create lookup</title>{% endblock title %}
+
+{% block content %}
+<h1>Add New LKP</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" class="form-control" id="category" name="category" required>
+    </div>
+    <div class="form-group">
+        <label for="desc">Description</label>
+        <input type="text" class="form-control" id="desc" name="desc">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

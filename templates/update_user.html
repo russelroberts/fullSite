@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit User</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+    </div>
+    <div class="form-group">
+        <label for="pwd">Password</label>
+        <input type="password" class="form-control" id="pwd" name="pwd" value="{{ user.pwd }}" required>
+    </div>
+    <div class="form-group">
+        <label for="fname">First Name</label>
+        <input type="text" class="form-control" id="fname" name="fname" value="{{ user.fname }}">
+    </div>
+    <div class="form-group">
+        <label for="lname">Last Name</label>
+        <input type="text" class="form-control" id="lname" name="lname" value="{{ user.lname }}">
+    </div>
+    <div class="form-group">
+        <label for="role_id">Role ID</label>
+        <input type="number" class="form-control" id="role_id" name="role_id" value="{{ user.role_id }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}
