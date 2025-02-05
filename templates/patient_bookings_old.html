@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+    <meta name = "description" content="HAS - Home">
+{% endblock head %}
+{% block title %}<title>H.A.S - Patient Bookings</title>{% endblock title %}
+
+{% block content %}
+<h1>Patient Bookings</h1>
+<div>
+    step 1 - Select Health Center
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Created By</th>
+            <th>Health Center</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Clinical Services</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.id }}</td>
+            <td>{{ booking.created_by }}</td>
+            <td>{{ booking.healthcenter }}</td>
+            <td>{{ booking.date }}</td>
+            <td>{{ booking.statusLKP }}</td>
+            <td>{{ booking.clinicalservices }}</td>
+            <td>
+                <a href="{{ url_for('update_booking', id=booking.id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_booking', id=booking.id) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('create_booking') }}" class="btn btn-primary">Add New Booking</a>
+
+<h1>Patient Bookings</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Patient ID</th>
+            <th>Status</th>
+            <th>Comments</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patientbooking in patientbookings %}
+        <tr>
+            <td>{{ patientbooking.booking_id }}</td>
+            <td>{{ patientbooking.patient_id }}</td>
+            <td>{{ patientbooking.statusLKP }}</td>
+            <td>{{ patientbooking.comments }}</td>
+            <td>
+                <a href="{{ url_for('update_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('create_patientbooking') }}" class="btn btn-primary">Add New Patient Booking</a>
+{% endblock %}

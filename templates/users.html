@@ -16,19 +16,19 @@
     <tbody>
         {% for user in users %}
         <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.email }}</td>
+            <td>{{ user.User.id }}</td>
+            <td>{{ user.User.email }}</td>
             <td>****************</td>
-            <td>{{ user.fname }}</td>
-            <td>{{ user.lname }}</td>
-            <td>{{ user.role_id }}</td>
+            <td>{{ user.User.fname }}</td>
+            <td>{{ user.User.lname }}</td>
+            <td>{{ user.Role.name }}</td>
             <td>
-                <a href="{{ url_for('update_user', id=user.id) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ url_for('delete_user', id=user.id) }}" class="btn btn-danger">Delete</a>
+                <a href="{{ url_for('update_user', id=user.User.id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('delete_user', id=user.User.id) }}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 <a href="{{ url_for('create_user') }}" class="btn btn-primary">Add New User</a>
-{% endblock %}
+{% endblock content %}

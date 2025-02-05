@@ -14,19 +14,120 @@ app = Flask(__name__)
 app.secret_key="somesupersecretkey"
 
 #Please return to your default port 3306
-app.config['SQLALCHEMY_DATABASE_URI']='mysql+mysqlconnector://robertsru:SOPcourse123@localhost:13306/HAS_db'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+mysqlconnector://robertsru:SOPcourse123@localhost:13306/HAS12_db'
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
 
 #check if database exists
 if not database_exists(engine.url):
     create_database(engine.url)
-
-
+ #   redirect(url_for('/install'))
+#else:
 Base.metadata.create_all(engine)
 
 db = SQLAlchemy(app)
 
 #*************End INIT***************8
+
+#************************************
+#        install sample data
+#************************************
+
+@app.route('/install')
+def install():
+    queries = []
+
+    def add_if_not_exists(model, data):
+        """Helper function to check if data exists, if not insert it."""
+        exists = db.session.query(model).first()
+        if not exists:
+            db.session.bulk_insert_mappings(model, data)
+            db.session.commit()
+            for d in data:
+                queries.append(f"INSERT INTO {model.__tablename__} VALUES ({d})")
+
+    # Add roles
+    add_if_not_exists(Role, [
+        {"name": "admin", "desc": "Administrator"},
+        {"name": "consultant", "desc": "Doctor Role"},
+        {"name": "Nurse", "desc": "Nurse Role"}
+    ])
+
+    hash = "doctor123" + app.secret_key
+    hash = hashlib.sha256(hash.encode())
+    password = hash.hexdigest()
+    hash = "admin123" + app.secret_key
+    hash = hashlib.sha256(hash.encode())
+    adminpassword = hash.hexdigest()
+            
+    # Add users
+    add_if_not_exists(User, [
+        {"email": "admin@example.com", "pwd": adminpassword, "fname": "Admin", "lname": "User", "role_id": 1},
+        {"email": "doctor1@example.com", "pwd": password, "fname": "Doctor1", "lname": "User", "role_id": 2},
+        {"email": "doctor2@example.com", "pwd": password, "fname": "Doctor2", "lname": "User", "role_id": 2},
+        {"email": "doctor3@example.com", "pwd": password, "fname": "Doctor3", "lname": "User", "role_id": 2},
+        {"email": "nurse@example.com", "pwd": password, "fname": "Nurse", "lname": "User", "role_id": 3}
+    ])
+    # Add health centers
+    add_if_not_exists(HealthCenter, [
+        {"name": "Health Center 1", "district": "District A"},
+        {"name": "Health Center 2", "district": "District B"},
+        {"name": "Health Center 3", "district": "District C"},
+        {"name": "Roseau", "district": "District A"},
+        {"name": "Mahaut", "district": "District B"},
+        {"name": "Georgetown", "district": "District C"}
+    ])
+
+
+    # Add patients
+    add_if_not_exists(Patient, [
+        {"fname": "John", "lname": "Doe", "tele1": "1234567890", "email": "johndoe@example.com", "healthcenter": 1},
+        {"fname": "Jane", "lname": "Smith", "tele1": "0987654321", "email": "janesmith@example.com", "healthcenter": 2},
+        {"fname": "Mike", "lname": "Brown", "tele1": "1122334455", "email": "mikebrown@example.com", "healthcenter": 3},
+        {"fname": "James", "lname": "Doe", "tele1": "1234567890", "email": "johndoe@example.com", "healthcenter": 1},
+        {"fname": "Johan", "lname": "Smith", "tele1": "0987654321", "email": "janesmith@example.com", "healthcenter": 2},
+        {"fname": "Maria", "lname": "Brown", "tele1": "1122334455", "email": "mikebrown@example.com", "healthcenter": 3}
+    ])
+
+    # Add lookup values
+    add_if_not_exists(LKP, [
+        {"name": "called", "category": "patientstatus"},
+        {"name": "notified", "category": "patientstatus"},
+        {"name": "cancelled", "category": "patientstatus"},
+        {"name": "seen- with follow-up", "category": "patientstatus"},
+        {"name": "seen without follow-up", "category": "patientstatus"},
+        {"name": "arrived", "category": "patientstatus"},
+        {"name": "running late", "category": "patientstatus"},
+        {"name": "unscheduled walk in", "category": "patientstatus"},
+        {"name": "Created", "category": "bookingstatus"},
+        {"name": "Pending", "category": "bookingstatus"},
+        {"name": "Confirmed", "category": "bookingstatus"},
+        {"name": "General Checkup", "category": "clinicalservices"},
+        {"name": "maternity", "category": "clinicalservices"},
+        {"name": "ENT", "category": "clinicalservices"},
+        {"name": "mental health", "category": "clinicalservices"},
+        {"name": "Eye exam", "category": "clinicalservices"},
+        {"name": "vaccines", "category": "clinicalservices"},
+        {"name": "tele Health Session", "category": "clinicalservices"}
+    ])
+
+
+    # Add bookings
+    add_if_not_exists(Booking, [
+        {"created_by": 1, "healthcenter": 1, "date": datetime.today(), "statusLKP": 2, "clinicalservices": "General Checkup"},
+        {"created_by": 2, "healthcenter": 2, "date": datetime.today(), "statusLKP": 2, "clinicalservices": "Mental Health"},
+        {"created_by": 3, "healthcenter": 3, "date": datetime.today(), "statusLKP": 2, "clinicalservices": "Eye Exam"}
+    ])
+
+    # Add patient bookings
+   # add_if_not_exists(PatientBooking, [
+   #     {"booking_id": 1, "patient_id": 1, "statusLKP": 2, "comments": "First visit"},
+   #     {"booking_id": 2, "patient_id": 2, "statusLKP": 2, "comments": "Follow-up"},
+   #     {"booking_id": 3, "patient_id": 3, "statusLKP": 2, "comments": "Emergency"}
+   # ])
+
+    return render_template('install.html', queries=queries)
+
+#******END INSTALL SAMPLE DATA******
 
 #***********************************
 #    testing area
@@ -55,6 +156,7 @@ def index():
          with engine.connect() as con:
             result = con.execute(text(f"Select name from role where id = {session['role_id']}"))
             rolename = result.fetchone()
+            session['rolename'] = rolename.name
             con.commit()
          return render_template('index.html', email=session['email'],rolename=rolename.name)
     return redirect(url_for('login'))
@@ -232,16 +334,69 @@ def delete_role(id):
 #*******************************
 @app.route('/bookings')
 def bookings():
-    bookings = db.session.query(Booking).all()
+    bookings =( db.session.query(Booking,User,HealthCenter,LKP)
+        .join(User, User.id==Booking.created_by)
+        .join(HealthCenter, HealthCenter.id==Booking.healthcenter)
+        .join(LKP,LKP.id==Booking.statusLKP)
+        .filter(Booking.created_by==session['id'])
+        .all()
+    )
     patientbookings = db.session.query(PatientBooking).all()
     healthcenters = db.session.query(HealthCenter).all()
     return render_template('bookings.html', bookings=bookings, patientbookings=patientbookings,healthcenters=healthcenters)
 
 @app.route('/patient_bookings')
 def patient_bookings():
-    bookings=db.session.query(Booking).all()
-    patientBookings=db.session.query(PatientBooking).all()
-    return render_template('patient_bookings.html',bookings=bookings, patientbookings=patientBookings)
+    #Bookings=db.session.query(Booking).all()
+    Bookings = (
+        db.session.query(User.fname, User.lname, Booking, HealthCenter.name.label("healthcenter_name"))
+        .join(Role, User.role_id == Role.id)
+        .join(Booking, User.id == Booking.created_by)
+        .join(HealthCenter, Booking.healthcenter == HealthCenter.id)
+        .filter(Role.name == 'consultant') #this should not be hardcoded
+        .all()
+    )
+    Patients=(
+        db.session.query(Patient,HealthCenter.name.label('healthcenter_name'))
+        .join(HealthCenter, Patient.healthcenter == HealthCenter.id)
+        .all()
+    )
+    PatientBookings = (db.session.query(PatientBooking,Booking,Patient,LKP,User)
+                       .join(Booking,Booking.id == PatientBooking.booking_id)
+                       .join(Patient, Patient.id == PatientBooking.patient_id)
+                       .join(LKP, LKP.id == PatientBooking.statusLKP)
+                       .join(User, User.id== Booking.created_by)
+                       .all()
+    )
+                       
+    Status = db.session.query(LKP).filter_by(category='patientstatus')
+    Healthcenters=db.session.query(HealthCenter).all()
+    
+    return render_template('patient_bookings.html',
+                           patientstatus=Status,
+                           bookings=Bookings, 
+                           patients=Patients, 
+                           healthcenters=Healthcenters,
+                           patientbookings=PatientBookings)
+
+@app.route('/save_patientbooking', methods=['POST'])
+def save_patientbooking():
+    data = request.json
+    booking_id = data.get('booking_id')
+    patients = data.get('patients', [])
+    print(patients)
+    for p in patients:
+        patientbooking = db.session.query(PatientBooking).filter_by(patient_id=p['patient_id'], booking_id=booking_id).first()
+        if patientbooking:
+            patientbooking.comments = p['comments']
+            patientbooking.statusLKP = p['status']
+        else:
+            new_patientBooking = PatientBooking(booking_id=booking_id, patient_id=p['patient_id'], comments=p['comments'], statusLKP=p['status'])
+            db.session.add(new_patientBooking)
+    
+    db.session.commit()
+    return jsonify({'message': 'Records updated successfully'}), 200
+
 
 @app.route('/create_booking', methods=['GET', 'POST'])
 def create_booking():
@@ -278,7 +433,7 @@ def update_booking(id):
         booking.healthcenter = request.form['healthcenter']
         booking.date = request.form['date']
         booking.statusLKP = request.form['statusLKP']
-        booking.clinicalservices = request.form['clinicalservices']
+        booking.clinicalservices = request.form['selServices']
         db.session.commit()
         return redirect(url_for('bookings'))
      return render_template('update_booking.html', booking=booking,bookingstatus=bookingStatus,healthcenters=healthcenters,clinicalservices=my_services)
@@ -331,7 +486,11 @@ def delete_patientbooking(booking_id, patient_id):
 #*******************************
 @app.route('/patients')
 def patients():
-    patients = db.session.query(Patient).all()
+    patients = (
+        db.session.query(Patient,HealthCenter)
+        .join(HealthCenter,HealthCenter.id == Patient.healthcenter)
+        .all()
+    )
     return render_template('patients.html', patients=patients)
 
 @app.route('/create_patient', methods=['GET', 'POST'])
@@ -424,7 +583,11 @@ def delete_lkp(id):
 #***********************************
 @app.route('/users')
 def users():
-    my_users = db.session.query(User).all()
+    my_users = (
+        db.session.query(User,Role)
+        .join(Role, Role.id==User.role_id)
+        .all()
+    )
     return render_template('users.html', users=my_users)
 
 @app.route('/create_user', methods=['GET', 'POST'])
@@ -447,14 +610,38 @@ def update_user(id):
     user = db.session.query(User).get_or_404(id)
     roles= db.session.query(Role).all()
     if request.method == 'POST':
+        hash = request.form['pwd'] + app.secret_key
+        hash = hashlib.sha256(hash.encode())
+        password = hash.hexdigest()
+            
         user.email = request.form['email']
-        user.pwd = request.form['pwd']
+        user.pwd = password
         user.fname = request.form['fname']
         user.lname = request.form['lname']
         user.role_id = request.form['role_id']
         db.session.commit()
         return redirect(url_for('users'))
     return render_template('update_user.html', user=user,roles=roles)
+
+@app.route('/update_profile/<int:id>', methods=['GET', 'POST'])
+def update_profile(id):
+    user = db.session.query(User).get_or_404(id)
+    roles= db.session.query(Role).all()
+    if request.method == 'POST':
+        hash = request.form['pwd'] + app.secret_key
+        hash = hashlib.sha256(hash.encode())
+        password = hash.hexdigest()
+        
+        user.email = request.form['email']
+        user.pwd = password
+        user.fname = request.form['fname']
+        user.lname = request.form['lname']
+        #user.role_id = request.form['role_id']
+        db.session.commit()
+        return redirect(url_for('index'))
+        #    return redirect(url_for('users'))
+    return render_template('update_profile.html', user=user,roles=roles)
+
 
 @app.route('/delete_user/<int:id>')
 def delete_user(id):
@@ -505,4 +692,5 @@ def delete_healthcenter(id):
 
 
 if __name__=='__main__':
+    Base.metadata.create_all(engine)  # Ensure tables exist
     app.run(debug=True)

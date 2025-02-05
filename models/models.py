@@ -40,7 +40,7 @@ class Patient(Base,BaseModel):
     tele2: Mapped[str] = mapped_column(String(20), nullable=True)
     email: Mapped[str] = mapped_column(String(255), nullable=True)
     comments: Mapped[str] = mapped_column(String(255), nullable=True)
-    healthcenter:Mapped[int]=mapped_column(Integer, ForeignKey('LKP.id'))
+    healthcenter:Mapped[int]=mapped_column(Integer, ForeignKey('healthcenter.id'))
 
 class LKP(Base,BaseModel):
     __tablename__ = 'LKP'
@@ -50,7 +50,7 @@ class LKP(Base,BaseModel):
     desc: Mapped[str] = mapped_column(String(255), nullable=True)
 
 class HealthCenter(Base,BaseModel):
-    __tablename__ = 'HealthCenter'
+    __tablename__ = 'healthcenter'
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     district:Mapped[str] = mapped_column(String(255), nullable=True) #districts
@@ -70,4 +70,4 @@ class PatientBooking(Base,BaseModel):
     booking_id:Mapped[int]=mapped_column(Integer,ForeignKey('booking.id'), primary_key=True )
     patient_id:Mapped[int]=mapped_column(Integer,ForeignKey('patient.id'),primary_key=True)
     statusLKP:Mapped[int]=mapped_column(Integer, ForeignKey('LKP.id'))
-    Comments:Mapped[str] = mapped_column(String(255))
+    comments:Mapped[str] = mapped_column(String(255))

@@ -2,70 +2,175 @@
 {% block head %}
     <meta name = "description" content="HAS - Home">
 {% endblock head %}
-{% block title %}<title>H.A.S - Patient Bookings</title>{% endblock title %}
+{% block title %}H.A.S - Patient Bookings{% endblock title %}
 
 {% block content %}
 <h1>Patient Bookings</h1>
-<div>
-    step 1 - Select Health Center
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<div class="container mt-20">
+    <label for="healthcenter">Select Health Center:</label>
+    <select name="healthcenter" id="healthcenter" class="form-select w-25">
+        <option value="">All</option>
+        {% for healthcenter in healthcenters %}
+          <option value="{{healthcenter.name}}">{{healthcenter.name}}</option>
+        {% endfor %}
+        </select>
+    
+
+    <h4 class="mt-4">Bookings</h4>
+    <table id="bookingTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Consultant</th>
+                <th>Date</th>
+                <th>Services</th>
+                <th>Health Center</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.lname }},{{ booking.fname }}</td>
+                <td>{{ booking.Booking.date }}</td>
+                <td>{{ booking.Booking.clinicalservices}}</td>
+                <td>{{ booking.healthcenter_name}}</td>
+                <td><input type="radio" name="bookingSelect" value="1"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Patients</h4>
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" class="form-select w-25 mb-2">
+        <option value="">All</option>
+        {% for pstatus in patientstatus %}
+
+          <option value="{{pstatus.id}}">{{pstatus.name}}</option>
+        {% endfor %}
+       
+    </select>
+    
+    <table id="patientTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Health Center</th>
+                <th>Patient email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Telephone</th>
+                <th>Comments</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient.healthcenter_name}}</td>
+                <td ><input type="hidden" value="{{ patient.Patient.id }}">{{ patient.Patient.email }}</td>
+                <td>{{ patient.Patient.fname }}</td>
+                <td>{{ patient.Patient.lname }}</td>
+                <td>{{ patient.Patient.tele1 }},{{ patient.Patient.tele2 }}</td>
+                <td contenteditable="true">
+                    <textarea id="comment" value="{{ patient.Patient.comments }}"></textarea>
+                </td>
+                <td contenteditable="true">
+                    <select id="status" class="form-select">
+                        {% for pstatus in patientstatus %}
+                           {% if pstatus.id == patient.Patient.statusLKP %}
+                          <option value="{{pstatus.id}}" selected>{{pstatus.name}}</option>
+                          {% else %}
+                          <option value="{{pstatus.id}}">{{pstatus.name}}</option>
+                          {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><button class="btn btn-primary save-btn">Save</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Patient Bookings</h2>
+    
+    <table id="pBookingsTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Consultant</th>
+                <th>Patient</th>
+                <th>status</th>
+                <th>comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pbooking in patientbookings %}
+            <tr>
+                <td>{{ pbooking.Booking.date }}</td>
+                <td >{{ pbooking.User.fname}} {{ pbooking.User.lname}}</td>
+                <td >{{ pbooking.Patient.fname}} {{ pbooking.Patient.lname}}</td>
+                <td>{{ pbooking.LKP.name }}</td>
+                <td>{{ pbooking.PatientBooking.comments}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var bookingTable = $('#bookingTable').DataTable();
+            var patientTable = $('#patientTable').DataTable();
+
+            $('#healthcenter').on('change', function() {
+                var selected = $(this).val();
+                bookingTable.column(3).search(selected).draw();
+                patientTable.column(0).search(selected).draw();
+            });
+
+            $('#statusFilter').on('change', function() {
+                patientTable.column(6).search($(this).val()).draw();
+            });
+
+            $('.save-btn').on('click', function() {
+                var row = $(this).closest('tr');
+                var data = {
+                    patient_id: row.find('td:eq(1) input').val(),
+                    comments: row.find('td:eq(5) textarea').val(),
+                    status: row.find('td:eq(6) select').val()
+                };
+                var bookingId = $('input[name="bookingSelect"]:checked').val();
+                if (!bookingId) {
+                    alert('Please select a booking first.');
+                    return;
+                }
+                
+                $.ajax({
+                    url: '/save_patientbooking',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ booking_id: bookingId, patients: [data] }),
+                    error: function(xhr,stat,error)
+                    {
+                        alert(error);
+
+                    },
+                    success: function(response) {
+                        alert('Patient record updated successfully!');
+                    }
+                });
+            });
+        });
+    </script>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Created By</th>
-            <th>Health Center</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Clinical Services</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for booking in bookings %}
-        <tr>
-            <td>{{ booking.id }}</td>
-            <td>{{ booking.created_by }}</td>
-            <td>{{ booking.healthcenter }}</td>
-            <td>{{ booking.date }}</td>
-            <td>{{ booking.statusLKP }}</td>
-            <td>{{ booking.clinicalservices }}</td>
-            <td>
-                <a href="{{ url_for('update_booking', id=booking.id) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ url_for('delete_booking', id=booking.id) }}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{{ url_for('create_booking') }}" class="btn btn-primary">Add New Booking</a>
+{% endblock content %}
 
-<h1>Patient Bookings</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Booking ID</th>
-            <th>Patient ID</th>
-            <th>Status</th>
-            <th>Comments</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for patientbooking in patientbookings %}
-        <tr>
-            <td>{{ patientbooking.booking_id }}</td>
-            <td>{{ patientbooking.patient_id }}</td>
-            <td>{{ patientbooking.statusLKP }}</td>
-            <td>{{ patientbooking.comments }}</td>
-            <td>
-                <a href="{{ url_for('update_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ url_for('delete_patientbooking', booking_id=patientbooking.booking_id, patient_id=patientbooking.patient_id) }}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{{ url_for('create_patientbooking') }}" class="btn btn-primary">Add New Patient Booking</a>
-{% endblock %}
+{% block log %}
+
+
+{% endblock log%}

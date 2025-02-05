@@ -41,16 +41,16 @@
         <nav id="navmenu" class="navmenu">
           <ul>
             {% if 'loggedin' in session %}
-                        <li>welcome {{ email }}  - {{rolename}}</li>
+                        <li>welcome {{ session['email'] }}  - {{ session['rolename'] }}</li>
                         <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
-                           {% if rolename=='consultant' %}
+                           {% if session['rolename'] =='consultant' %}
                            <li class="nav-item"><a class="nav-link" href="/bookings">Schedule Bookings</a></li>
-                           <li class="nav-item"><a class="nav-link" href="/edit_user">Edit Profile</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/update_profile/{{session['id']}}">Edit Profile</a></li>
                        
                            
-                           {% elif rolename== 'admin' %}
-                           <li class="nav-item"><a class="nav-link" href="/bookings">bookings</a></li>
-                           <li class="nav-item"><a class="nav-link" href="/patient_bookings">bookings</a></li>
+                           {% elif session['rolename'] == 'admin' %}
+                           <!-- <li class="nav-item"><a class="nav-link" href="/bookings">bookings</a></li> -->
+                           <li class="nav-item"><a class="nav-link" href="/patient_bookings">patient bookings</a></li>
                            <li class="nav-item"><a class="nav-link" href="/logout"></a></li>
                            <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
@@ -85,7 +85,7 @@
       <div class="heading">
         <div class="container">
           <div class="row d-flex justify-content-center text-center">
-            <div class="col-lg-8">
+            <div class="col-lg-15">
                 <div class="shadow-lg p-3 mb-5 bg-body rounded">
           <!-- Page content-->
       {% block content %} {% endblock content %}
@@ -113,7 +113,7 @@
       <p>© <span>Copyright 2025</span> <strong class="px-1 sitename">Russel Roberts</strong> <span>All Rights Reserved</span></p>
      </div>
   </footer>
-{% block log %}{% endblock %}
+{% block log %}{% endblock log %}
 </body>
 
 </html>

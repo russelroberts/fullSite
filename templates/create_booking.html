@@ -44,12 +44,12 @@
         <h1>Clinical Services</h1>
             {% for eachService in clinicalServices %}
             <div class="form-switch">
-                <input class="form-check-input special" type="checkbox" value="{{eachService.name}}" id="chk_{{eachService.id}}">
+                <input class="special form-check-input" type="checkbox" value="{{eachService.name}}" id="chk_{{eachService.id}}">
                     {{eachService.name}}
               </div>
             {% endfor %}
             </select>
-        <input type="text"class="form-control readonly" id="selServices" name="selServices"/>
+        <input type="hidden"class="form-control readonly" id="selServices" name="selServices"/>
     </div>
     <button type="submit" id="submit_booking" class="btn btn-primary">Submit</button>
 
@@ -66,4 +66,8 @@
      </script>
       
 </form>
-{% endblock %}
+{% endblock content %}
+
+{% block log %}
+
+{% endblock log%}

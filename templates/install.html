@@ -4,12 +4,14 @@
 {% endblock head %}
 {% block title %}<title>Home</title>{% endblock title %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="mt-4">HAS</h1>
-    <p>Welcome to the Healthcenter Appointment System <br/>
-        This site is part of final requirements for final project at School of Programming
-        </p>
-</div>
+<h1>Database Installation</h1>
+<h2>Executed Queries:</h2>
+<ul>
+    {% for query in queries %}
+        <li>{{ query }}</li>
+    {% endfor %}
+</ul>
+
 {% endblock content %}
 
 {% block log %}{{ msg }}{% endblock log %}
